@@ -15,12 +15,31 @@ public class ObjectPool : MonoBehaviour
 
     private void InstantiatePool()
     {
-
+        foreach(var obj in _poolObj)
+        {
+            for(int i = 0; i < _poolObj.Count; i++)
+            {
+                var prefab = Instantiate(obj.Obj, _poolParent);
+                prefab.name = obj.Name;
+                prefab.SetActive(false);
+                _pools.Add(new ObjectParam(prefab.name, prefab));
+            }
+        }
     }
 
-    public GameObject UseObject()
+    public GameObject UseObject(string name, Vector3 pos)
     {
+        if (name is null) return null;
 
+        foreach(var pool in _pools)
+        {
+            if(!pool.gameObject.activeSelf && pool.name == name)
+            {
+                pool.gameObject.transform.position = pos;
+                pool.gameObject.SetActive(true);
+                return pool.gameObject;
+            }
+        }
     }
 
 }
@@ -28,9 +47,15 @@ public class ObjectPool : MonoBehaviour
 [Serializable]
 public class ObjectParam
 {
-    public string name { get; set; }
+    public string name { get; }
 
-    public GameObject obj { get; set; }
+    public GameObject gameObject { get; }
+
+    public ObjectParam(string name, GameObject obj)
+    {
+        this.name = name;
+        this.gameObject = obj;
+    }
 }
 
 [Serializable]
