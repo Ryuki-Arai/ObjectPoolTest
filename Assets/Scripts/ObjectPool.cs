@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,13 +12,18 @@ public class ObjectPool : MonoBehaviour
 
     List<ObjectParam> _pools = new List<ObjectParam>();
 
+    void Awake()
+    {
+        InstantiatePool();
+    }
+
     private void InstantiatePool()
     {
         foreach(var obj in _poolObj)
         {
-            for(int i = 0; i < _poolObj.Count; i++)
+            for(int i = 0; i < obj.MaxCount; i++)
             {
-                var prefab = Instantiate(obj.Obj, _poolParent);
+                var prefab = Instantiate(obj.GameObject, _poolParent);
                 prefab.name = obj.Name;
                 prefab.SetActive(false);
                 _pools.Add(new ObjectParam(prefab.name, prefab));
@@ -33,12 +37,36 @@ public class ObjectPool : MonoBehaviour
 
         foreach(var pool in _pools)
         {
-            if(!pool.gameObject.activeSelf && pool.name == name)
+            if(!pool.GameObject.activeSelf && pool.Name == name)
             {
-                pool.gameObject.transform.position = pos;
-                pool.gameObject.SetActive(true);
-                return pool.gameObject;
+                pool.GameObject.transform.position = pos;
+                pool.GameObject.SetActive(true);
+                return pool.GameObject;
             }
+        }
+
+        var searchObj = _pools.Find(x => x.Name == name);
+
+        if (searchObj is null) return null;
+
+        var prefab = Instantiate(searchObj.GameObject, _poolParent);
+        prefab.name = searchObj.Name;
+        prefab.transform.position = pos;
+        prefab.SetActive(true);
+        _pools.Add(new ObjectParam(prefab.name, prefab));
+
+        return prefab;
+    }
+
+    public T UseObject<T>(string name, Vector3 pos) where T : Component
+    {
+        if(UseObject(name, pos).TryGetComponent(out T component))
+        {
+            return component;
+        }
+        else
+        {
+            return null;
         }
     }
 
@@ -47,14 +75,14 @@ public class ObjectPool : MonoBehaviour
 [Serializable]
 public class ObjectParam
 {
-    public string name { get; }
+    public string Name { get; private set; }
 
-    public GameObject gameObject { get; }
+    public GameObject GameObject { get; private set; }
 
-    public ObjectParam(string name, GameObject obj)
+    public ObjectParam(string name, GameObject gameObject)
     {
-        this.name = name;
-        this.gameObject = obj;
+        Name = name;
+        GameObject = gameObject;
     }
 }
 
@@ -65,14 +93,14 @@ public class ObjectPoolParam
     private string name;
     
     [SerializeField] 
-    private GameObject obj;
+    private GameObject gameObject;
     
     [SerializeField,Min(0)] 
     private int maxCount;
 
     public string Name => name;
 
-    public GameObject Obj => obj;
+    public GameObject GameObject => gameObject;
 
     public int MaxCount => maxCount;
 
