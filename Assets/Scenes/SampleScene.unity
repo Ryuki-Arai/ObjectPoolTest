@@ -154,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _poolObj:
   - name: "\u4E38"
-    obj: {fileID: 8943336688220967110, guid: 9bf45048a197eff459c872d31cfd161f, type: 3}
+    gameObject: {fileID: 8943336688220967110, guid: 9bf45048a197eff459c872d31cfd161f, type: 3}
     maxCount: 1000
   _poolParent: {fileID: 225416842}
 --- !u!4 &225416842
