@@ -155,7 +155,7 @@ MonoBehaviour:
   _poolObj:
   - name: Circle
     gameObject: {fileID: 8943336688220967110, guid: 9bf45048a197eff459c872d31cfd161f, type: 3}
-    maxCount: 1000
+    maxCount: 10
   _poolParent: {fileID: 225416842}
 --- !u!4 &225416842
 Transform:
@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58fb30b877131914da1e4d6e6cc26a4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: "\u4E38"
+  _name: Circle
 --- !u!114 &588818094
 MonoBehaviour:
   m_ObjectHideFlags: 0
